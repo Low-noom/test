@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デュエマデッキトラッカー</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    margin:20px;
+    background:#f5f5f5;
+}
+
+h1{
+    text-align:center;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:12px;
+    margin:8px 0;
+}
+
+.name{
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.counts{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.box{
+    width:40px;
+    height:40px;
+    border:2px solid #666;
+    border-radius:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    cursor:pointer;
+    user-select:none;
+    background:white;
+}
+
+.checked{
+    background:#666;
+    color:white;
+}
+
+.remain{
+    margin-top:5px;
+    color:#333;
+    font-size:14px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>デュエマデッキトラッカー</h1>
+
+<button onclick="resetAll()">全リセット</button>
+
+<div id="deck"></div>
+
+<script>
+
+const deck = [
+["新世壊",4],
+["ゴンパ",4],
+["バレ",4],
+["ウキ",4],
+["カージ",4],
+["超絶",4],
+["エアヴォ",3],
+["ゾグジ",2],
+["キリン",4],
+["ガリュミーズ",3],
+["ガリュザーク",2],
+["クローチェ",1],
+["メラヴォ",1]
+];
+
+const deckDiv = document.getElementById("deck");
+
+deck.forEach(card=>{
+
+    const name = card[0];
+    const count = card[1];
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "card";
+
+    const title = document.createElement("div");
+    title.className = "name";
+    title.textContent = name;
+
+    const boxes = document.createElement("div");
+    boxes.className = "counts";
+
+    const remain = document.createElement("div");
+    remain.className = "remain";
+
+    function updateRemain(){
+        const checked =
+        boxes.querySelectorAll(".checked").length;
+
+        remain.textContent =
+        `確認済み ${checked}枚 / 残り ${count-checked}枚`;
+    }
+
+    for(let i=0;i<count;i++){
+
+        const box = document.createElement("div");
+
+        box.className="box";
+
+        box.textContent="□";
+
+        box.onclick=()=>{
+            box.classList.toggle("checked");
+            box.textContent=
+            box.classList.contains("checked")
+            ? "■"
+            : "□";
+
+            updateRemain();
+        };
+
+        boxes.appendChild(box);
+    }
+
+    updateRemain();
+
+    wrapper.appendChild(title);
+    wrapper.appendChild(boxes);
+    wrapper.appendChild(remain);
+
+    deckDiv.appendChild(wrapper);
+});
+
+function resetAll(){
+
+    document.querySelectorAll(".box")
+    .forEach(box=>{
+
+        box.classList.remove("checked");
+        box.textContent="□";
+
+    });
+
+    document.querySelectorAll(".card")
+    .forEach(card=>{
+
+        const total =
+        card.querySelectorAll(".box").length;
+
+        card.querySelector(".remain").textContent =
+        `確認済み 0枚 / 残り ${total}枚`;
+
+    });
+}
+
+</script>
+
+</body>
+</html>
